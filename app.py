@@ -28,7 +28,7 @@ with tab1:
 
     fig = px.scatter(data_df, x='VALUE', y='GROWTH', color='Value_Growth_Clusters', hover_name='LIGHTCAST_SKILL',title='VALUE vs GROWTH')
     fig.update_layout(width=900, height=600) 
-    fig.show()
+    st.plotly_chart(fig)
     
 with tab2:
     data_df = pd.read_csv('dynamic_ssg_clusters.csv')
@@ -43,7 +43,7 @@ with tab2:
 
     fig = px.scatter(data_df, x='DIFFICULTY', y='GROWTH', color='Difficulty_Growth_Clusters', hover_name='LIGHTCAST_SKILL',title='DIFFICULTY vs GROWTH')
     fig.update_layout(width=900, height=600) 
-    fig.show()
+    st.plotly_chart(fig)
     
 with tab3:
     data_df = pd.read_csv('dynamic_ssg_clusters.csv')
@@ -58,7 +58,7 @@ with tab3:
 
     fig = px.scatter(data_df, x='DIFFICULTY', y='VALUE', color='Value_Difficulty_Clusters', hover_name='LIGHTCAST_SKILL',title='DIFFICULTY vs VALUE')
     fig.update_layout(width=900, height=600) 
-    fig.show()
+    st.plotly_chart(fig)
     
     
 
