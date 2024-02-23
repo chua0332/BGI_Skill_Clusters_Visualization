@@ -16,6 +16,7 @@ Definition of key metrics:
 tab1, tab2, tab3 = st.tabs(['**VALUE vs GROWTH visual**','**DIFFICULTY vs GROWTH visual**', '**DIFFICULTY vs VALUE visual**'])
 
 with tab1:
+    st.subheader('Please feel free to zoom in and out of the graph')
     data_df = pd.read_csv('dynamic_ssg_clusters.csv')
 # Renaming the numerical labels to actual labels and converting to strings
     data_df['GROWTH_KME'] = data_df['GROWTH_KME'].map({1:'High Growth', 0: 'Low Growth'})
