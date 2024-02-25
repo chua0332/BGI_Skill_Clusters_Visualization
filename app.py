@@ -10,10 +10,11 @@ st.markdown("""
 Definition of key metrics:
 - Value: Median wage of postings with the associated skill
 - Growth: Weighted year on year growth of skill frequency (divided by total number of posts collected) 
-- Difficulty: a measure of skill sophistication where higher values indicate use in more complex occupation.      
+- Difficulty: a measure of skill sophistication where higher values indicate use in more complex occupation. 
+- Resilience: This metric is a composite of Ubiquity and Stability     
             """)
 
-tab1, tab2, tab3 = st.tabs(['**VALUE vs GROWTH visual**','**DIFFICULTY vs GROWTH visual**', '**DIFFICULTY vs VALUE visual**'])
+tab1, tab2, tab3, tab4= st.tabs(['**VALUE vs GROWTH visual**','**DIFFICULTY vs GROWTH visual**', '**DIFFICULTY vs VALUE visual**', '**VALUE vs RESILIENCE visual**'])
 
 with tab1:
     st.subheader('Please feel free to zoom in and out of the graph')
@@ -62,6 +63,23 @@ with tab3:
     fig = px.scatter(data_df, x='DIFFICULTY', y='VALUE', color='Value_Difficulty_Clusters', hover_name='LIGHTCAST_SKILL',title='DIFFICULTY vs VALUE')
     fig.update_layout(width=900, height=600) 
     st.plotly_chart(fig)
+    
+with tab4:
+    st.subheader('Please feel free to zoom in and out of the graph')
+    data_df = pd.read_csv('dynamic_ssg_clusters.csv')
+# Renaming the numerical labels to actual labels and converting to strings
+    data_df['VALUE_KME'] = data_df['VALUE_KME'].map({1:'High Value', 0: 'Low Value'})
+    data_df['RESILIENCE_KME'] = data_df['RESILIENCE_KME'].map({1: 'High Resilience', 0: 'Low Resilience'})
+    data_df['VALUE_KME'] = data_df['VALUE_KME'].astype(str)
+    data_df['RESILIENCE_KME'] = data_df['RESILIENCE_KME'].astype(str)
+
+# Concatenate 'VALUE_KME' and 'DIFFICULTY_KME' for color
+    data_df['Value_Resilience_Clusters'] = data_df['VALUE_KME'] + '_' + data_df['RESILIENCE_KME'].astype(str)
+
+    fig = px.scatter(data_df, x='VALUE', y='RESILIENCE', color='Value_Resilience_Clusters', hover_name='LIGHTCAST_SKILL',title='VALUE vs RESILIENCE')
+    fig.update_layout(width=900, height=600) 
+    st.plotly_chart(fig)
+    
     
     
 
