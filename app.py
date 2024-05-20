@@ -8,77 +8,84 @@ pio.templates.default = "plotly"
 
 st.markdown("""
 Definition of key metrics:
-- Value: Median wage of postings with the associated skill
-- Growth: Weighted year on year growth of skill frequency (divided by total number of posts collected) 
-- Difficulty: a measure of skill sophistication where higher values indicate use in more complex occupation. 
-- Resilience: This metric is a composite of Ubiquity and Stability     
+- Value: Median wage of postings with the associated skill across 2020 - 2023
+- Growth: Weighted year on year growth of skill frequency (divided by total number of posts collected for a *particular year*) 
+- Difficulty: The composite of Education, Experience & Complexity
+- Demand: Basically a proxy for skill frequency, whereby it counts the number of job postings the skill is appearing in across the years (2020-2023), and then taking the average
+- Resilience: The composite of Ubiquity & Stability
             """)
 
-tab1, tab2, tab3, tab4= st.tabs(['**VALUE vs GROWTH visual**','**DIFFICULTY vs GROWTH visual**', '**DIFFICULTY vs VALUE visual**', '**VALUE vs RESILIENCE visual**'])
+tab1, tab2, tab3 = st.tabs(['**VALUE vs GROWTH visual**','**DIFFICULTY vs VALUE visual**', '**RESILIENCE vs GROWTH visual**'])
 
 with tab1:
     st.subheader('Please feel free to zoom in and out of the graph')
-    data_df = pd.read_csv('dynamic_ssg_clusters.csv')
-# Renaming the numerical labels to actual labels and converting to strings
-    data_df['GROWTH_KME'] = data_df['GROWTH_KME'].map({1:'High Growth', 0: 'Low Growth'})
-    data_df['VALUE_KME'] = data_df['VALUE_KME'].map({1: 'High Value', 0: 'Low Value'})
-    data_df['GROWTH_KME'] = data_df['GROWTH_KME'].astype(str)
-    data_df['VALUE_KME'] = data_df['VALUE_KME'].astype(str)
+    data_df = pd.read_csv('dimension_clusters_forTableau.csv')
 
-# Concatenate 'VALUE_KME' and 'GROWTH_KME' for color
-    data_df['Value_Growth_Clusters'] = data_df['VALUE_KME'] + '_' + data_df['GROWTH_KME'].astype(str)
+# Concatenate 'Demand Cluster' and 'Growth Cluster' for color
+    data_df['Value_Growth_Clusters'] = data_df['Value Cluster'] + '_' + data_df['Growth Cluster'].astype(str)
+    
+#Converting value to numberic and removing $ signs and ','
+    data_df['Value'] = data_df['Value'].str.replace('$', '', regex=False)  # Setting regex=False since '$' is literal here
+    data_df['Value'] = data_df['Value'].str.replace(',', '', regex=False)
 
-    fig = px.scatter(data_df, x='VALUE', y='GROWTH', color='Value_Growth_Clusters', hover_name='LIGHTCAST_SKILL',title='VALUE vs GROWTH')
-    fig.update_layout(width=900, height=600) 
+# Convert to numeric
+    data_df['Value'] = pd.to_numeric(data_df['Value'], errors='coerce')
+    
+#Creating the dropdown to select the clusters
+    cluster_options = data_df['Value_Growth_Clusters'].unique().tolist()
+    selected_cluster = st.multiselect('Select Value_Growth Clusters', cluster_options, default=cluster_options)
+    
+ # Filter data based on selected cluster
+    filtered_data = data_df[data_df['Value_Growth_Clusters'].isin(selected_cluster)]
+
+    fig = px.scatter(filtered_data, x='Value', y='Growth', color='Value_Growth_Clusters', hover_name='Lightcast Skill',hover_data = {'SSG_Skill': True},title='GROWTH vs DEMAND')
+    fig.update_layout(width=900, height=800) 
     st.plotly_chart(fig)
     
 with tab2:
     st.subheader('Please feel free to zoom in and out of the graph')
-    data_df = pd.read_csv('dynamic_ssg_clusters.csv')
-# Renaming the numerical labels to actual labels and converting to strings
-    data_df['GROWTH_KME'] = data_df['GROWTH_KME'].map({1:'High Growth', 0: 'Low Growth'})
-    data_df['DIFFICULTY_KME'] = data_df['DIFFICULTY_KME'].map({1: 'High Difficulty', 0: 'Low Difficulty'})
-    data_df['GROWTH_KME'] = data_df['GROWTH_KME'].astype(str)
-    data_df['DIFFICULTY_KME'] = data_df['DIFFICULTY_KME'].astype(str)
+    data_df = pd.read_csv('dimension_clusters_forTableau.csv')
 
-# Concatenate 'DIFFICULTY_KME' and 'GROWTH_KME' for color
-    data_df['Difficulty_Growth_Clusters'] = data_df['DIFFICULTY_KME'] + '_' + data_df['GROWTH_KME'].astype(str)
+# Concatenate 'Value Cluster' and 'Difficulty Cluster' for color
+    data_df['Value_Difficulty_Clusters'] = data_df['Value Cluster'] + '_' + data_df['Difficulty Cluster'].astype(str)
+    
+#Converting value to numberic and removing $ signs and ','
+    data_df['Value'] = data_df['Value'].str.replace('$', '', regex=False)  # Setting regex=False since '$' is literal here
+    data_df['Value'] = data_df['Value'].str.replace(',', '', regex=False)
 
-    fig = px.scatter(data_df, x='DIFFICULTY', y='GROWTH', color='Difficulty_Growth_Clusters', hover_name='LIGHTCAST_SKILL',title='DIFFICULTY vs GROWTH')
-    fig.update_layout(width=900, height=600) 
+# Convert to numeric
+    data_df['Value'] = pd.to_numeric(data_df['Value'], errors='coerce')
+    
+#Creating the dropdown to select the clusters
+    cluster_options = data_df['Value_Difficulty_Clusters'].unique().tolist()
+    selected_cluster = st.multiselect('Select Value_Difficulty_Clusters', cluster_options, default=cluster_options)
+    
+ # Filter data based on selected cluster
+    filtered_data = data_df[data_df['Value_Difficulty_Clusters'].isin(selected_cluster)]
+
+    fig = px.scatter(data_df, x='Value', y='Difficulty', color='Value_Difficulty_Clusters', hover_name='Lightcast Skill',hover_data = {'SSG_Skill': True},title='VALUE vs DIFFICULTY')
+    fig.update_layout(width=900, height=800) 
     st.plotly_chart(fig)
     
 with tab3:
     st.subheader('Please feel free to zoom in and out of the graph')
-    data_df = pd.read_csv('dynamic_ssg_clusters.csv')
-# Renaming the numerical labels to actual labels and converting to strings
-    data_df['VALUE_KME'] = data_df['VALUE_KME'].map({1:'High Value', 0: 'Low Value'})
-    data_df['DIFFICULTY_KME'] = data_df['DIFFICULTY_KME'].map({1: 'High Difficulty', 0: 'Low Difficulty'})
-    data_df['VALUE_KME'] = data_df['VALUE_KME'].astype(str)
-    data_df['DIFFICULTY_KME'] = data_df['DIFFICULTY_KME'].astype(str)
+    data_df = pd.read_csv('dimension_clusters_forTableau.csv')
 
-# Concatenate 'VALUE_KME' and 'DIFFICULTY_KME' for color
-    data_df['Value_Difficulty_Clusters'] = data_df['VALUE_KME'] + '_' + data_df['DIFFICULTY_KME'].astype(str)
+# Concatenate 'Resilience Cluster' and 'Growth Cluster' for color
+    data_df['Resilience_Growth_Clusters'] = data_df['Resilience Cluster'] + '_' + data_df['Growth Cluster'].astype(str)
+    
+#Creating the dropdown to select the clusters
+    cluster_options = data_df['Resilience_Growth_Clusters'].unique().tolist()
+    selected_cluster = st.multiselect('Select Resilience_Growth_Clusters', cluster_options, cluster_options)
+    
+ # Filter data based on selected cluster
+    filtered_data = data_df[data_df['Resilience_Growth_Clusters'].isin(selected_cluster)]
 
-    fig = px.scatter(data_df, x='DIFFICULTY', y='VALUE', color='Value_Difficulty_Clusters', hover_name='LIGHTCAST_SKILL',title='DIFFICULTY vs VALUE')
-    fig.update_layout(width=900, height=600) 
+    fig = px.scatter(data_df, x='Resilience', y='Growth', color='Resilience_Growth_Clusters', hover_name='Lightcast Skill', hover_data = {'SSG_Skill': True}, title='Resilience vs Growth')
+    fig.update_layout(width=900, height=800) 
     st.plotly_chart(fig)
     
-with tab4:
-    st.subheader('Please feel free to zoom in and out of the graph')
-    data_df = pd.read_csv('dynamic_ssg_clusters.csv')
-# Renaming the numerical labels to actual labels and converting to strings
-    data_df['VALUE_KME'] = data_df['VALUE_KME'].map({1:'High Value', 0: 'Low Value'})
-    data_df['RESILIENCE_KME'] = data_df['RESILIENCE_KME'].map({1: 'High Resilience', 0: 'Low Resilience'})
-    data_df['VALUE_KME'] = data_df['VALUE_KME'].astype(str)
-    data_df['RESILIENCE_KME'] = data_df['RESILIENCE_KME'].astype(str)
 
-# Concatenate 'VALUE_KME' and 'DIFFICULTY_KME' for color
-    data_df['Value_Resilience_Clusters'] = data_df['VALUE_KME'] + '_' + data_df['RESILIENCE_KME'].astype(str)
-
-    fig = px.scatter(data_df, x='VALUE', y='RESILIENCE', color='Value_Resilience_Clusters', hover_name='LIGHTCAST_SKILL',title='VALUE vs RESILIENCE')
-    fig.update_layout(width=900, height=600) 
-    st.plotly_chart(fig)
     
     
     
