@@ -18,7 +18,7 @@ Definition of key metrics:
 tab1, tab2, tab3 = st.tabs(['**VALUE vs GROWTH visual**','**DIFFICULTY vs VALUE visual**', '**RESILIENCE vs GROWTH visual**'])
 
 with tab1:
-    st.subheader('Please feel free to zoom in and out of the graph')
+    #st.subheader('Please feel free to zoom in and out of the graph')
     data_df = pd.read_csv('dimension_clusters_forTableau.csv')
 
 # Concatenate 'Demand Cluster' and 'Growth Cluster' for color
@@ -43,7 +43,7 @@ with tab1:
     st.plotly_chart(fig)
     
 with tab2:
-    st.subheader('Please feel free to zoom in and out of the graph')
+    #st.subheader('Please feel free to zoom in and out of the graph')
     data_df = pd.read_csv('dimension_clusters_forTableau.csv')
 
 # Concatenate 'Value Cluster' and 'Difficulty Cluster' for color
@@ -68,7 +68,7 @@ with tab2:
     st.plotly_chart(fig)
     
 with tab3:
-    st.subheader('Please feel free to zoom in and out of the graph')
+    #st.subheader('Please feel free to zoom in and out of the graph')
     data_df = pd.read_csv('dimension_clusters_forTableau.csv')
 
 # Concatenate 'Resilience Cluster' and 'Growth Cluster' for color
